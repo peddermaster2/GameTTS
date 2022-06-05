@@ -27,7 +27,7 @@ def collapse_whitespace(text):
   return re.sub(_whitespace_re, ' ', text)
 
 
-def gruut_cleaner(text):
+def gruut_cleaner(text, lang="de-de"):
     # Table for str.translate to fix gruut/TTS phoneme mismatch
     GRUUT_TRANS_TABLE = str.maketrans("g", "ɡ")
     phonemizer_args = {
@@ -39,7 +39,7 @@ def gruut_cleaner(text):
     text = lowercase(text)
     ph_list = gruut.text_to_phonemes(
         text,
-        lang="de-de",
+        lang=lang,
         return_format="word_phonemes",
         phonemizer_args=phonemizer_args,
     )

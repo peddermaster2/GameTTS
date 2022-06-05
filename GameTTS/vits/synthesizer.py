@@ -37,8 +37,8 @@ class Synthesizer:
             if str(speaker_id) == val:
                 return key
 
-    def get_text(self, text):
-        text_norm = text_to_sequence(text, self.hps_config.data.text_cleaners)
+    def get_text(self, text, lang):
+        text_norm = text_to_sequence(text, self.hps_config.data.text_cleaners, lang)
         if self.hps_config.data.add_blank:
             text_norm = commons.intersperse(text_norm, 0)
         text_norm = torch.LongTensor(text_norm)
@@ -63,12 +63,12 @@ class Synthesizer:
         _ = utils.load_checkpoint(model_path, self.gen_model)
 
 
-    def synthesize(self, text, speaker_id=0, speech_param=None):
+    def synthesize(self, text, speaker_id=0, speech_param=None, lang="de-de"):
         wavs = []
         seg_text = self.segmenter.segment(text)
 
         for idx, text in enumerate(seg_text):
-            stn_tst = self.get_text(text)
+            stn_tst = self.get_text(text, lang)
             with torch.no_grad():
                 x_tst_lengths = torch.LongTensor([stn_tst.size(0)])
                 sid = torch.LongTensor([int(speaker_id)])
